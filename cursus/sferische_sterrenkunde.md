@@ -14,3 +14,4 @@
 - tekening dagboog
 
 - Kunnen we een betere animatie maken van de dagboog tekeningen?
+

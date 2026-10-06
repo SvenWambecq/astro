@@ -1,0 +1,873 @@
+.app-shell {
+  width: min(1460px, 100% - 48px);
+  margin: 0 auto;
+  padding-bottom: 26px;
+}
+
+.masthead {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.wordmark,
+.masthead-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wordmark {
+  color: inherit;
+  text-decoration: none;
+}
+
+.wordmark-mark {
+  width: 29px;
+  height: 29px;
+  display: grid;
+  place-items: center;
+  color: var(--sun-deep);
+  border: 1px solid #d7dfd8;
+  border-radius: 50%;
+}
+
+.wordmark-divider,
+.masthead-index {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.live-indicator,
+.condition-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--observer);
+}
+
+.masthead-index {
+  margin-left: 10px;
+  padding-left: 14px;
+  border-left: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
+}
+
+.intro {
+  min-height: 102px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 0 16px;
+}
+
+.eyebrow,
+.readout-label,
+.panel-tag,
+.chart-meta,
+.page-footer,
+.range-ends,
+.legend-label,
+.chart-axis-label,
+.diagram-label,
+.earth-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.7px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--observer-deep);
+}
+
+.intro h1 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.intro-copy {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.reset-button,
+.step-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.reset-button {
+  gap: 7px;
+  padding: 8px 11px;
+  font-size: 12px;
+}
+
+.reset-button:hover,
+.step-button:hover {
+  background: #eef3ef;
+  border-color: #a8bdb4;
+}
+
+.reset-button:focus-visible,
+.step-button:focus-visible,
+.number-field input:focus-visible,
+.date-field input:focus-visible,
+input[type='range']:focus-visible {
+  outline: 2px solid var(--observer);
+  outline-offset: 2px;
+}
+
+.control-deck {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) 1px minmax(420px, 1.3fr);
+  align-items: center;
+  gap: 24px;
+  padding: 14px 18px 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+
+.control-separator {
+  width: 1px;
+  height: 62px;
+  background: var(--line);
+}
+
+.control-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 9px;
+}
+
+.control-heading label {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.control-heading label span {
+  margin-left: 4px;
+  color: var(--observer-deep);
+  font-family: var(--display);
+  font-size: 16px;
+}
+
+.control-readout {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.date-readout {
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-variant-numeric: normal;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.range-input {
+  min-width: 90px;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--observer);
+  cursor: pointer;
+}
+
+.date-range {
+  accent-color: var(--sun-deep);
+}
+
+.number-field,
+.date-field {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 7px;
+  color: var(--muted);
+  background: #f7f9f6;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.number-field input,
+.date-field input {
+  min-width: 0;
+  padding: 0;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  font: 12px var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.number-field input {
+  width: 46px;
+  text-align: right;
+}
+
+.number-field span {
+  font-size: 12px;
+}
+
+.date-field {
+  color: var(--observer-deep);
+}
+
+.date-field input {
+  width: 124px;
+  font-family: var(--sans);
+}
+
+.range-ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  color: #819089;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.35px;
+}
+
+.step-button {
+  width: 28px;
+  height: 29px;
+  flex: 0 0 auto;
+  padding: 0;
+}
+
+.date-controls-row .range-input {
+  min-width: 100px;
+}
+
+.readout-strip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 51px;
+  padding: 0 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.readout-cell {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 18px;
+  border-right: 1px solid var(--line);
+}
+
+.readout-cell:first-child {
+  padding-left: 2px;
+}
+
+.readout-label {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.45px;
+}
+
+.readout-cell strong {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.readout-cell small {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.condition-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+  padding: 6px 9px;
+  color: var(--observer-deep);
+  background: #e9f1eb;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+.condition-dot.is-night {
+  background: #73839b;
+}
+
+.views-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.view-panel,
+.chart-panel {
+  min-width: 0;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+
+.view-panel {
+  padding: 13px 15px 10px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  min-width: 0;
+}
+
+.panel-number {
+  color: #9aa79f;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.panel-header h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.panel-tag {
+  flex: 0 0 auto;
+  padding: 4px 6px;
+  color: var(--observer-deep);
+  background: #edf4ef;
+  border-radius: 3px;
+  font-size: 9px;
+}
+
+.panel-subtitle {
+  margin: 4px 0 2px 26px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.earth-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 290px;
+  overflow: visible;
+}
+
+.celestial-rim {
+  fill: #f9fbf8;
+  stroke: #aab8b8;
+  stroke-width: 1.4;
+}
+
+.equator {
+  stroke: #347b8c;
+  stroke-width: 1.5;
+}
+
+.axis-line {
+  stroke: #c3c9cc;
+  stroke-width: 1.1;
+}
+
+.earth-disc {
+  fill: #5896aa;
+  stroke: #315968;
+  stroke-width: 1.2;
+}
+
+.earth-equator {
+  stroke: #d4e5e3;
+  stroke-width: 1.2;
+}
+
+.earth-axis {
+  stroke: #c3c9cc;
+  stroke-width: 1.1;
+}
+
+.observer-dot {
+  fill: var(--observer);
+  stroke: #174b30;
+  stroke-width: 1.5;
+}
+
+.zenith-ray {
+  stroke: #263238;
+  stroke-width: 1.8;
+}
+
+.horizon-line {
+  stroke: #111;
+  stroke-width: 1.8;
+}
+
+.sun-direction,
+.delta-guide,
+.delta-arc {
+  fill: none;
+  stroke: #c3c9cc;
+  stroke-width: 1.8;
+}
+
+.delta-guide {
+  stroke-dasharray: 4 4;
+  stroke-width: 1.2;
+}
+
+.phi-arc {
+  fill: none;
+  stroke: #347b8c;
+  stroke-width: 2.2;
+}
+
+.angle-label {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.phi-label {
+  fill: #246777;
+}
+
+.delta-label {
+  fill: #89979b;
+}
+
+.sun-dot {
+  fill: var(--sun);
+  stroke: #6d4d12;
+  stroke-width: 1.5;
+}
+
+.diagram-label,
+.earth-label {
+  fill: #61736d;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+}
+
+.zenith-label {
+  fill: #253d38;
+}
+
+.sun-label {
+  fill: #916316;
+}
+
+.earth-label {
+  fill: #e6efea;
+  font-size: 7px;
+  letter-spacing: 0.7px;
+}
+
+.pole-label {
+  fill: #768b84;
+  font-size: 8px;
+}
+
+.horizon-label {
+  fill: #111;
+}
+
+.earth-legend {
+  font: 700 9px var(--mono);
+  fill: #52645e;
+}
+
+.daily-chord {
+  stroke: var(--sun);
+  stroke-width: 3;
+}
+
+.daily-chord.night {
+  stroke-dasharray: 7 5;
+  stroke-width: 2.2;
+}
+
+.panel-footer {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  min-height: 25px;
+  padding-left: 4px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.panel-footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.observer-legend {
+  background: var(--observer);
+}
+
+.legend-line {
+  display: inline-block;
+  width: 19px;
+  height: 0;
+  border-top: 2px solid;
+}
+
+.horizon-legend {
+  border-color: #111;
+}
+
+.sun-legend {
+  border-color: var(--sun);
+}
+
+.day-legend {
+  border-color: var(--sun);
+}
+
+.night-legend {
+  border-color: var(--sun);
+  border-top-style: dashed;
+}
+
+.north-legend {
+  border-color: #347b8c;
+}
+
+.observer-sky {
+  position: relative;
+  width: 100%;
+  height: 270px;
+  overflow: hidden;
+}
+
+.observer-sky canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+
+.chart-panel {
+  margin-top: 14px;
+  padding: 13px 15px 7px;
+}
+
+.chart-header {
+  margin-bottom: 0;
+}
+
+.chart-meta {
+  color: var(--muted);
+  font-size: 9px;
+  text-align: right;
+}
+
+.altitude-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 225px;
+  overflow: visible;
+}
+
+.chart-grid {
+  stroke: #e5eae5;
+  stroke-width: 1;
+}
+
+.chart-grid.vertical {
+  stroke-dasharray: 2 5;
+}
+
+.chart-horizon {
+  stroke: #111;
+  stroke-width: 1.6;
+}
+
+.chart-tick {
+  fill: #71817b;
+  font: 10px var(--mono);
+}
+
+.chart-axis-label {
+  fill: #71817b;
+  font: 700 9px var(--mono);
+  letter-spacing: 0.6px;
+}
+
+.sun-event {
+  stroke: #87958f;
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.event-label {
+  fill: #60716a;
+  font: 700 8px var(--mono);
+  letter-spacing: 0.4px;
+}
+
+.daylight-fill {
+  fill: var(--sun);
+  opacity: 0.13;
+}
+
+.altitude-full {
+  fill: none;
+  stroke: #a8b4af;
+  stroke-width: 1.6;
+}
+
+.altitude-day {
+  fill: none;
+  stroke: var(--sun);
+  stroke-width: 2.7;
+}
+
+.noon-point {
+  fill: var(--sun);
+  stroke: #6d4d12;
+  stroke-width: 1.2;
+}
+
+.page-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 1px 0;
+  color: #82918b;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.35px;
+}
+
+.page-footer b {
+  color: var(--sun-deep);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    width: min(100% - 28px, 700px);
+  }
+
+  .control-deck {
+    grid-template-columns: 1fr;
+    gap: 13px;
+    padding: 13px;
+  }
+
+  .control-separator {
+    width: 100%;
+    height: 1px;
+  }
+
+  .views-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .earth-diagram {
+    max-height: none;
+  }
+
+  .observer-sky {
+    height: 310px;
+  }
+
+  .readout-strip {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 10px 0;
+  }
+
+  .readout-cell {
+    padding: 0 12px;
+  }
+
+  .condition-chip {
+    margin-left: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: calc(100% - 20px);
+  }
+
+  .masthead {
+    min-height: 54px;
+    font-size: 9px;
+    letter-spacing: 0.8px;
+  }
+
+  .masthead-meta {
+    gap: 6px;
+  }
+
+  .masthead-index {
+    margin-left: 2px;
+    padding-left: 7px;
+  }
+
+  .intro {
+    min-height: 91px;
+    align-items: flex-start;
+    padding-top: 16px;
+  }
+
+  .intro h1 {
+    font-size: 27px;
+  }
+
+  .intro-copy {
+    max-width: 290px;
+    font-size: 12px;
+  }
+
+  .reset-button {
+    padding: 7px;
+  }
+
+  .reset-button span {
+    display: none;
+  }
+
+  .date-readout {
+    font-size: 10px;
+  }
+
+  .date-field {
+    gap: 3px;
+    padding: 4px;
+  }
+
+  .date-field input {
+    width: 112px;
+    font-size: 10px;
+  }
+
+  .readout-cell {
+    gap: 5px;
+    padding: 0 8px;
+  }
+
+  .readout-label {
+    font-size: 8px;
+  }
+
+  .readout-cell strong {
+    font-size: 12px;
+  }
+
+  .condition-chip {
+    margin-left: auto;
+    font-size: 10px;
+  }
+
+  .view-panel,
+  .chart-panel {
+    padding: 11px 9px 7px;
+  }
+
+  .panel-header h2 {
+    font-size: 15px;
+  }
+
+  .panel-tag {
+    font-size: 8px;
+  }
+
+  .panel-subtitle {
+    margin-left: 0;
+    font-size: 10px;
+  }
+
+  .observer-sky {
+    height: 285px;
+  }
+
+  .panel-footer {
+    gap: 10px;
+    font-size: 9px;
+  }
+
+  .chart-meta {
+    max-width: 130px;
+    font-size: 8px;
+  }
+
+  .altitude-chart {
+    min-height: 175px;
+  }
+
+  .page-footer {
+    flex-wrap: wrap;
+    font-size: 8px;
+  }
+}
