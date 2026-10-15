@@ -48,7 +48,7 @@ export default function EarthFrame({ latitude, declination }) {
   ]
 
   return (
-    <svg className="earth-diagram" viewBox={`0 0 ${VIEW.width} ${VIEW.height}`} role="group" aria-label="Earth-centered meridian showing latitude, solar declination, horizon, and daily arc">
+    <svg className="earth-diagram" viewBox={`0 0 ${VIEW.width} ${VIEW.height}`} role="img" aria-label="Earth-centered meridian showing latitude, solar declination, horizon, and daily arc">
       <defs>
         <marker id={arrowId} markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
           <path d="M0 0 L8 4 L0 8 Z" fill="#253d38" />

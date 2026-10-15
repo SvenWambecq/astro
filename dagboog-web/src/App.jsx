@@ -3,6 +3,7 @@ import { CalendarDays, ChevronLeft, ChevronRight, RotateCcw, SunMedium } from 'l
 import EarthFrame from './EarthFrame.jsx'
 import ObserverSky from './ObserverSky.jsx'
 import SkyChart from './SkyChart.jsx'
+import SunFrame from './SunFrame.jsx'
 import {
   dayOfYear,
   daylightGeometry,
@@ -78,7 +79,7 @@ function App() {
         <div className="masthead-meta">
           <span className="live-indicator" />
           <span>SPHERICAL ASTRONOMY</span>
-          <span className="masthead-index">01—03</span>
+          <span className="masthead-index">01—04</span>
         </div>
       </header>
 
@@ -173,9 +174,18 @@ function App() {
       </section>
 
       <section className="views-grid" aria-label="Linked reference-frame diagrams">
+        <article className="view-panel sun-panel">
+          <header className="panel-header">
+            <div className="panel-title-wrap"><span className="panel-number">01</span><h2>Earth around the Sun</h2></div>
+            <span className="panel-tag">23.44° TILT</span>
+          </header>
+          <SunFrame latitude={latitude} selectedDate={selectedDate} />
+          <footer className="panel-footer"><span><i className="legend-dot observer-legend" />Observer · noon</span><span><i className="legend-line equator-legend" />Equator</span><span>Not to scale</span></footer>
+        </article>
+
         <article className="view-panel earth-panel">
           <header className="panel-header">
-            <div className="panel-title-wrap"><span className="panel-number">01</span><h2>Earth meridian</h2></div>
+            <div className="panel-title-wrap"><span className="panel-number">02</span><h2>Earth meridian</h2></div>
             <span className="panel-tag">φ / δ</span>
           </header>
           <p className="panel-subtitle">Observer latitude and Sun declination in one meridian section</p>
@@ -185,7 +195,7 @@ function App() {
 
         <article className="view-panel sky-panel">
           <header className="panel-header">
-            <div className="panel-title-wrap"><span className="panel-number">02</span><h2>Observer’s sky</h2></div>
+            <div className="panel-title-wrap"><span className="panel-number">03</span><h2>Observer’s sky</h2></div>
             <span className="panel-tag">LOCAL FRAME</span>
           </header>
           <p className="panel-subtitle">Daily circle against the observer’s horizon</p>
@@ -196,7 +206,7 @@ function App() {
 
       <section className="chart-panel">
         <header className="panel-header chart-header">
-          <div className="panel-title-wrap"><span className="panel-number">03</span><h2>Altitude through the solar day</h2></div>
+          <div className="panel-title-wrap"><span className="panel-number">04</span><h2>Altitude through the solar day</h2></div>
           <span className="chart-meta">LOCAL SOLAR TIME · {daylight.hours.toFixed(2)} HOURS ABOVE HORIZON</span>
         </header>
         <SkyChart latitude={latitude} declination={declination} daylight={daylight} />

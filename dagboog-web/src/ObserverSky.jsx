@@ -84,19 +84,11 @@ export default function ObserverSky({ latitude, declination }) {
     controls.minDistance = 2.4
     controls.maxDistance = 6.5
 
-    const skyDome = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 28, 18, 0, Math.PI * 2, 0, Math.PI / 2),
-      new THREE.MeshBasicMaterial({ color: 0x789a97, wireframe: true, transparent: true, opacity: 0.3 }),
+    const skySphere = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 28, 18),
+      new THREE.MeshBasicMaterial({ color: 0x789a97, wireframe: true, transparent: true, opacity: 0.18 }),
     )
-    skyDome.rotation.x = Math.PI / 2
-    scene.add(skyDome)
-
-    const lowerSky = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 28, 18, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2),
-      new THREE.MeshBasicMaterial({ color: 0x789a97, wireframe: true, transparent: true, opacity: 0.07 }),
-    )
-    lowerSky.rotation.x = Math.PI / 2
-    scene.add(lowerSky)
+    scene.add(skySphere)
 
     const horizonPlane = new THREE.Mesh(
       new THREE.CircleGeometry(0.995, 120),
