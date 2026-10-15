@@ -16,9 +16,13 @@ export function daysInYear(year) {
   return (Date.UTC(year + 1, 0, 1) - Date.UTC(year, 0, 1)) / 86400000
 }
 
-export function solarDeclination(dateValue) {
+export function solarLongitude(dateValue) {
   const ordinal = dayOfYear(dateValue)
-  const longitude = 2 * Math.PI * (ordinal - 80) / YEAR_DAYS
+  return 2 * Math.PI * (ordinal - 80) / YEAR_DAYS
+}
+
+export function solarDeclination(dateValue) {
+  const longitude = solarLongitude(dateValue)
   const obliquity = OBLIQUITY_DEG * RAD
   return Math.asin(Math.sin(obliquity) * Math.sin(longitude))
 }

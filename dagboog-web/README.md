@@ -1,6 +1,8 @@
 # Dagboog Web
 
-A standalone React prototype of the solar day-arc notebook. The browser app calculates an approximate solar declination from the selected date and shows the Earth meridian, local observer sky, and solar altitude through the day.
+A standalone React prototype of the solar day-arc notebook. The browser app calculates an approximate solar declination from the selected date and shows three linked reference frames: Earth around the Sun, the Earth meridian, and the local observer sky, plus solar altitude through the day.
+
+The Sun-centered view shows a circular orbit with equinox and solstice markers, a fixed 23.44-degree axial tilt, Earth's equator, and an observer arrow at the selected latitude at local solar noon. Date changes move Earth around the orbit without changing its axis direction. Orbit phase uses the same seasonal approximation as solar declination; marker dates are approximate, and body sizes and distances are not to scale. Drag either 3D view to rotate it or scroll to zoom.
 
 ## Run locally
 
