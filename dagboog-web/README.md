@@ -29,6 +29,20 @@ The unused files in `public/` are excluded from this build.
 
 The regular `npm run build` output remains in `dist/` for web hosting.
 
+## GitHub Releases
+
+Push a tag matching `dagboog-web-v*` to build the standalone HTML and attach it
+to a GitHub Release. For example:
+
+```sh
+git tag dagboog-web-v1.0.0
+git push origin dagboog-web-v1.0.0
+```
+
+The workflow creates the release with generated notes, or replaces the HTML
+asset if that release already exists. The generated file does not need to be
+committed.
+
 ## Verify
 
 ```sh
