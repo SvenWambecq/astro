@@ -4,6 +4,11 @@
   padding-bottom: 26px;
 }
 
+.mobile-frame-selector,
+.mobile-controls {
+  display: none;
+}
+
 .masthead {
   min-height: 64px;
   display: flex;
@@ -132,6 +137,7 @@
 
 .reset-button:focus-visible,
 .step-button:focus-visible,
+.mobile-frame-selector button:focus-visible,
 .number-field input:focus-visible,
 .date-field input:focus-visible,
 input[type='range']:focus-visible {
@@ -747,14 +753,78 @@ input[type='range']:focus-visible {
   }
 
   .control-deck {
-    grid-template-columns: 1fr;
-    gap: 13px;
-    padding: 13px;
+    display: none;
   }
 
-  .control-separator {
-    width: 100%;
-    height: 1px;
+  .mobile-frame-selector {
+    display: flex;
+    gap: 4px;
+    margin-top: 12px;
+    padding: 4px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+  }
+
+  .mobile-frame-selector button {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    padding: 6px;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .mobile-frame-selector button[aria-pressed='true'] {
+    color: var(--observer-deep);
+    background: #e9f1eb;
+    font-weight: 700;
+  }
+
+  .view-panel[data-active='false'],
+  .chart-panel[data-active='false'],
+  .views-grid[data-frame='altitude'] {
+    display: none;
+  }
+
+  .mobile-controls {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    display: block;
+    margin-top: 10px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    box-shadow: 0 -4px 16px #1b302d14;
+  }
+
+  .mobile-controls .control-heading {
+    margin-bottom: 0;
+  }
+
+  .mobile-controls .number-field,
+  .mobile-controls .date-field {
+    padding: 0 7px;
+  }
+
+  .mobile-controls .number-field input,
+  .mobile-controls .date-field input {
+    min-height: 32px;
+    font-size: 16px;
+  }
+
+  .mobile-controls .range-input,
+  .mobile-controls .step-button {
+    min-height: 44px;
+  }
+
+  .mobile-controls .step-button {
+    width: 44px;
   }
 
   .views-grid {
@@ -762,11 +832,11 @@ input[type='range']:focus-visible {
   }
 
   .earth-diagram {
-    max-height: none;
+    max-height: 290px;
   }
 
   .observer-sky {
-    height: 310px;
+    height: 290px;
   }
 
   .readout-strip {

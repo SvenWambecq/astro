@@ -16,6 +16,12 @@ import './App.css'
 
 const DEFAULT_DATE = '2026-03-20'
 const DEFAULT_LATITUDE = 52
+const FRAMES = [
+  { id: 'sun', label: 'Sun', title: 'Earth around the Sun' },
+  { id: 'earth', label: 'Earth', title: 'Earth meridian' },
+  { id: 'observer', label: 'Observer', title: 'Observer sky' },
+  { id: 'altitude', label: 'Altitude', title: 'Altitude through the solar day' },
+]
 
 function moveCalendarDate(dateValue, offset) {
   const [year, month, day] = dateValue.split('-').map(Number)
@@ -44,6 +50,7 @@ function formatSolarTime(hour) {
 function App() {
   const [latitude, setLatitude] = useState(DEFAULT_LATITUDE)
   const [selectedDate, setSelectedDate] = useState(DEFAULT_DATE)
+  const [selectedFrame, setSelectedFrame] = useState('observer')
   const ordinal = dayOfYear(selectedDate)
   const year = Number(selectedDate.slice(0, 4))
   const declination = solarDeclination(selectedDate)
@@ -173,8 +180,23 @@ function App() {
         <div className="condition-chip"><span className={`condition-dot ${daylight.hours === 0 ? 'is-night' : ''}`} />{dateStatus}</div>
       </section>
 
-      <section className="views-grid" aria-label="Linked reference-frame diagrams">
-        <article className="view-panel sun-panel">
+      <nav className="mobile-frame-selector" aria-label="Select reference frame">
+        {FRAMES.map((frame) => (
+          <button
+            key={frame.id}
+            type="button"
+            aria-pressed={selectedFrame === frame.id}
+            aria-controls={`${frame.id}-panel`}
+            title={frame.title}
+            onClick={() => setSelectedFrame(frame.id)}
+          >
+            {frame.label}
+          </button>
+        ))}
+      </nav>
+
+      <section className="views-grid" aria-label="Linked reference-frame diagrams" data-frame={selectedFrame}>
+        <article id="sun-panel" className="view-panel sun-panel" data-active={selectedFrame === 'sun'}>
           <header className="panel-header">
             <div className="panel-title-wrap"><span className="panel-number">01</span><h2>Earth around the Sun</h2></div>
             <span className="panel-tag">23.44° TILT</span>
@@ -183,7 +205,7 @@ function App() {
           <footer className="panel-footer"><span><i className="legend-dot observer-legend" />Observer · noon</span><span><i className="legend-line equator-legend" />Equator</span><span>Not to scale</span></footer>
         </article>
 
-        <article className="view-panel earth-panel">
+        <article id="earth-panel" className="view-panel earth-panel" data-active={selectedFrame === 'earth'}>
           <header className="panel-header">
             <div className="panel-title-wrap"><span className="panel-number">02</span><h2>Earth meridian</h2></div>
             <span className="panel-tag">φ / δ</span>
@@ -193,7 +215,7 @@ function App() {
           <footer className="panel-footer"><span><i className="legend-dot observer-legend" />Observer</span><span><i className="legend-line horizon-legend" />Horizon</span><span><i className="legend-line sun-legend" />Sun direction</span></footer>
         </article>
 
-        <article className="view-panel sky-panel">
+        <article id="observer-panel" className="view-panel sky-panel" data-active={selectedFrame === 'observer'}>
           <header className="panel-header">
             <div className="panel-title-wrap"><span className="panel-number">03</span><h2>Observer’s sky</h2></div>
             <span className="panel-tag">LOCAL FRAME</span>
@@ -204,12 +226,69 @@ function App() {
         </article>
       </section>
 
-      <section className="chart-panel">
+      <section id="altitude-panel" className="chart-panel" data-active={selectedFrame === 'altitude'}>
         <header className="panel-header chart-header">
           <div className="panel-title-wrap"><span className="panel-number">04</span><h2>Altitude through the solar day</h2></div>
           <span className="chart-meta">LOCAL SOLAR TIME · {daylight.hours.toFixed(2)} HOURS ABOVE HORIZON</span>
         </header>
         <SkyChart latitude={latitude} declination={declination} daylight={daylight} />
+      </section>
+
+      <section className="mobile-controls" aria-label="Selected frame controls">
+        <div className="control-heading">
+          <label htmlFor="mobile-latitude">Latitude</label>
+          <label className="number-field" htmlFor="mobile-latitude-number">
+            <span className="visually-hidden">Latitude in degrees</span>
+            <input
+              id="mobile-latitude-number"
+              type="number"
+              min="-90"
+              max="90"
+              step="0.1"
+              value={latitude}
+              onChange={(event) => setLatitudeValue(event.target.value)}
+            />
+            <span>°</span>
+          </label>
+        </div>
+        <input
+          id="mobile-latitude"
+          className="range-input"
+          type="range"
+          min="-90"
+          max="90"
+          step="0.1"
+          value={latitude}
+          onChange={(event) => setLatitudeValue(event.target.value)}
+          aria-label="Observer latitude, degrees"
+        />
+        <div className="control-heading">
+          <label htmlFor="mobile-day">Date</label>
+          <label className="date-field" htmlFor="mobile-calendar-date">
+            <CalendarDays size={15} aria-hidden="true" />
+            <span className="visually-hidden">Select calendar date</span>
+            <input id="mobile-calendar-date" type="date" value={selectedDate} onChange={(event) => event.target.value && setSelectedDate(event.target.value)} />
+          </label>
+        </div>
+        <div className="control-row">
+          <button className="step-button" type="button" onClick={() => setSelectedDate(moveCalendarDate(selectedDate, -1))} aria-label="Previous day">
+            <ChevronLeft size={16} />
+          </button>
+          <input
+            id="mobile-day"
+            className="range-input date-range"
+            type="range"
+            min="1"
+            max={daysInYear(year)}
+            step="1"
+            value={ordinal}
+            onChange={(event) => setDayNumber(event.target.value)}
+            aria-label="Day of year; use left and right arrow keys to step by one day"
+          />
+          <button className="step-button" type="button" onClick={() => setSelectedDate(moveCalendarDate(selectedDate, 1))} aria-label="Next day">
+            <ChevronRight size={16} />
+          </button>
+        </div>
       </section>
 
       <footer className="page-footer">

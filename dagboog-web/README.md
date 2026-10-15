@@ -15,6 +15,14 @@ npm run dev
 
 Open the local URL printed by Vite. Use the latitude slider or numeric field, and use the day-of-year slider or calendar picker. The controls stay synchronized.
 
+On phones and narrow screens (up to 900px), use the Sun / Earth / Observer /
+Altitude selector to show one frame at a time; the observer sky is selected
+initially. Compact latitude and date sliders stay pinned below the diagram as
+you scroll, with buttons to step the date by one day. All frames share the same
+values; numeric latitude entry and the calendar picker are also available.
+Values stay synchronized when resizing back to the full desktop layout. This
+layout also works in the standalone HTML.
+
 ## Standalone HTML
 
 ```sh
