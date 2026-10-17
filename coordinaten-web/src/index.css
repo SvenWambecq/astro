@@ -1,0 +1,62 @@
+:root {
+  --ink: #1b302d;
+  --observer: #2e8b57;
+  --observer-deep: #256847;
+  --sun: #e3b522;
+  --sun-deep: #98731a;
+  --muted: #708079;
+  --line: #dbe3de;
+  --paper: #f2f5f1;
+  --surface: #ffffff;
+  --display: "Avenir Next", "Segoe UI Variable", "Trebuchet MS", sans-serif;
+  --sans: "Aptos", "Segoe UI Variable", "Trebuchet MS", sans-serif;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--paper);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(90deg, rgba(46, 139, 87, 0.025) 1px, transparent 1px),
+    linear-gradient(rgba(46, 139, 87, 0.025) 1px, transparent 1px),
+    var(--paper);
+  background-size: 26px 26px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  color: #122c24;
+  background: #c6e1cc;
+}
