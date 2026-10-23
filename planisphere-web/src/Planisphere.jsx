@@ -168,6 +168,16 @@ export default function Planisphere({ stars, lines, date, latitude, longitude, o
           </g>
         })}
         {options.targets && options.targetList.map((target) => { const point = project(target.ra, target.dec, latitude); return <g key={target.id} transform={`translate(${point[0]},${point[1]})`} data-object={target.id} onClick={() => onSelect(target.id)} className="target-marker"><circle r="4" /><circle r="11" stroke="none" fill="transparent" /><text x="8" y="4" transform={`rotate(${-rotation})`}>{target.designation}</text><title>{target.name}</title></g> })}
+        {options.planets && options.planetList.filter((planet) => 90 - pole * planet.dec <= 180 - Math.abs(latitude)).map((planet) => {
+          const point = project(planet.ra, planet.dec, latitude)
+          return <g key={planet.id} transform={`translate(${point[0]},${point[1]})`} style={{ '--planet-color': planet.color }} className="planet-marker" data-object={planet.id} role="button" tabIndex="0" aria-label={`Select ${planet.name}`} onClick={() => onSelect(planet.id)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelect(planet.id) } }}>
+            <circle r={Math.max(2.5, Math.min(5, 4.8 - planet.mag * 0.25))} className="planet-body" />
+            {planet.name === 'Saturn' ? <ellipse rx="9" ry="3.5" transform="rotate(-25)" className="planet-ring" /> : <circle r="7" className="planet-ring" />}
+            <text x="10" y="-8" transform={`rotate(${-rotation})`}>{planet.name}</text>
+            <circle r="12" fill="transparent" />
+            <title>{planet.name} | magnitude {planet.mag.toFixed(1)}</title>
+          </g>
+        })}
         {selectedPoint && <g className="selection-marker">
           {guidePoint && <line x1={guidePoint[0]} y1={guidePoint[1]} x2={selectedPoint[0]} y2={selectedPoint[1]} />}
           <circle cx={selectedPoint[0]} cy={selectedPoint[1]} r="12" />

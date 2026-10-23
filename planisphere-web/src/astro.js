@@ -1,4 +1,4 @@
-import { SiderealTime, Rotation_EQJ_EQD, RotateVector, VectorFromSphere, Spherical, EquatorFromVector, Observer, Equator, Horizon } from 'astronomy-engine'
+import { SiderealTime, Rotation_EQJ_EQD, RotateVector, VectorFromSphere, Spherical, EquatorFromVector, Observer, Equator, Horizon, Illumination } from 'astronomy-engine'
 
 export const RAD = Math.PI / 180
 export const normalize = (angle) => ((angle % 360) + 360) % 360
@@ -71,6 +71,30 @@ export function skyCondition(date, latitude, longitude) {
   const sun = Equator('Sun', date, observer, true, true)
   const height = Horizon(date, observer, sun.ra, sun.dec).altitude
   return { altitude: height, label: height >= 0 ? 'Daylight' : height > -6 ? 'Civil twilight' : height > -12 ? 'Nautical twilight' : height > -18 ? 'Astronomical twilight' : 'Dark sky' }
+}
+
+export function planetPositions(date, latitude, longitude) {
+  const observer = new Observer(latitude, longitude, 0)
+  return [
+    { name: 'Mercury', color: '#d6c9b9' },
+    { name: 'Venus', color: '#fff0b3' },
+    { name: 'Mars', color: '#ff9c79' },
+    { name: 'Jupiter', color: '#f5d2a1' },
+    { name: 'Saturn', color: '#e8d794' },
+    { name: 'Uranus', color: '#99e1da' },
+    { name: 'Neptune', color: '#9bbdff' },
+  ].map((planet) => {
+    const equatorial = Equator(planet.name, date, observer, true, true)
+    return {
+      ...planet,
+      id: `planet-${planet.name.toLowerCase()}`,
+      designation: planet.name,
+      type: 'Planet',
+      ra: normalize(equatorial.ra * 15),
+      dec: equatorial.dec,
+      mag: Illumination(planet.name, date).mag,
+    }
+  })
 }
 
 export function dateRingAngle(date, longitude) {

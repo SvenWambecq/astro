@@ -1,9 +1,47 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { Horizon, Observer } from 'astronomy-engine'
-import { altitude, diskRotation, horizontalToEquatorial, sidereal, horizonPoints, project, dateFields, dateFromFields, ofDate, RAD, separation, minutesForRotation } from '../src/astro.js'
+import { Equator, Horizon, Illumination, Observer } from 'astronomy-engine'
+import { altitude, diskRotation, horizontalToEquatorial, sidereal, horizonPoints, project, dateFields, dateFromFields, ofDate, RAD, separation, minutesForRotation, planetPositions } from '../src/astro.js'
 
 const date = new Date('2026-10-23T20:00:00Z')
+
+test('All seven planets use observer-specific equatorial coordinates of date and current magnitudes', () => {
+  for (const latitude of [-90, -34, 0, 51, 90]) {
+    for (const timestamp of ['1900-01-01T00:00:00Z', date, '2100-12-31T23:59:00Z']) {
+      const instant = new Date(timestamp)
+      const longitude = 4.47
+      const observer = new Observer(latitude, longitude, 0)
+      const planets = planetPositions(instant, latitude, longitude)
+      assert.equal(planets.length, 7)
+      assert.equal(new Set(planets.map((planet) => planet.id)).size, 7)
+      assert.ok(!planets.some((planet) => planet.name === 'Earth'))
+      for (const planet of planets) {
+        const expected = Equator(planet.name, instant, observer, true, true)
+        assert.ok(planet.ra >= 0 && planet.ra < 360)
+        assert.ok(Math.abs(planet.ra - expected.ra * 15) < 1e-9)
+        assert.equal(planet.dec, expected.dec)
+        assert.ok(Number.isFinite(planet.mag))
+        assert.equal(planet.mag, Illumination(planet.name, instant).mag)
+        const horizon = Horizon(instant, observer, expected.ra, expected.dec)
+        assert.ok(Math.abs(altitude(planet.ra, planet.dec, latitude, sidereal(instant, longitude)) - horizon.altitude) < 1e-6)
+      }
+    }
+  }
+})
+
+test('Planets move against the star field as the selected date advances', () => {
+  const later = new Date('2026-11-23T20:00:00Z')
+  const first = planetPositions(date, 51.15, 4.47)
+  const second = planetPositions(later, 51.15, 4.47)
+  const star = { ra: 68.98, dec: 16.51 }
+  const firstStar = ofDate(star.ra, star.dec, date)
+  const secondStar = ofDate(star.ra, star.dec, later)
+  assert.ok(separation(firstStar, secondStar) < 0.01)
+  for (const [index, planet] of first.entries()) {
+    assert.ok(separation(planet, second[index]) > 0.01, `${planet.name} must move relative to the stars`)
+  }
+  assert.ok(Math.abs(separation(first[2], firstStar) - separation(second[2], secondStar)) > 1)
+})
 
 for (const latitude of [-90, -51, -0.01, 0, 0.01, 51, 90]) {
   test(`Horizon and altitude agree with Astronomy Engine at latitude ${latitude}`, () => {

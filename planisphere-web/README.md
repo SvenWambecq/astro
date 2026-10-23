@@ -1,7 +1,8 @@
 # Planisphere
 
 A latitude-aware SVG planisphere with rotating sky and horizon disks, date/time
-controls, bright stars, constellation lines, and deep-sky finding targets.
+controls, bright stars, constellation lines, moving planets, and deep-sky finding
+targets.
 
 ## Develop and Build
 
@@ -27,6 +28,35 @@ npm run build:singlefile
 Both builds include third-party license notices in a non-executable text element
 in the HTML. The catalogue's original notice is also retained under `public/data/`.
 External attribution links are optional and need the internet only when opened.
+
+## Chart Navigation
+
+- Use the minus/plus controls to zoom between 100% and 600%.
+- Scroll over the chart to zoom toward the pointer, or pinch with two fingers.
+- Drag to pan when zoomed in. At 100%, dragging rotates the disk and changes
+  the observing time as before.
+- The circular-arrow **Reset zoom** button restores the complete disk at 100%.
+  Zooming, panning, and resetting do not change the observing time.
+
+## Planets
+
+Mercury, Venus, Mars, Jupiter, Saturn, Uranus, and Neptune are calculated with
+Astronomy Engine for the selected date, time, latitude, and longitude. Positions
+use observer-specific equatorial coordinates of date, matching the star chart.
+Changing the date moves planets against the constellations; changing the time
+also rotates the sky with respect to the horizon. Advance by days or weeks to
+make planetary motion easier to see.
+
+Use the **Planets** layer switch to show or hide their named markers. They obey
+the horizon mask but are independent of the star limiting-magnitude slider.
+The **Planets** finder tab and object search include all seven, even when below
+the horizon. Selecting one shows its current magnitude, altitude, coordinates,
+and nearby bright reference stars. Uranus and Neptune generally need optical
+aid; a plotted marker does not imply naked-eye visibility.
+
+Markers are symbolic, not true angular sizes; Saturn's ring icon is not an
+orientation model. The ephemerides are bundled and work offline in the single
+HTML file, without additional downloads.
 
 ## Publish With GitHub Pages
 
