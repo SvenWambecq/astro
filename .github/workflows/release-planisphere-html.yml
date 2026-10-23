@@ -1,0 +1,44 @@
+name: Release planisphere HTML
+
+on:
+  push:
+    tags:
+      - 'planisphere-web-v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: planisphere-web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefix planisphere-web
+
+      - name: Validate and build standalone HTML
+        working-directory: planisphere-web
+        run: |
+          npm run lint
+          npm test
+          npm run build:singlefile
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          asset='planisphere-web/dist-singlefile/index.html#planisphere.html'
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$asset" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$asset" --generate-notes
+          fi

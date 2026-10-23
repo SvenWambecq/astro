@@ -1,0 +1,70 @@
+name: Deploy planisphere to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'planisphere-web/**'
+      - '.github/workflows/deploy-planisphere-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: planisphere-web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefix planisphere-web
+
+      - name: Check code and astronomy tests
+        working-directory: planisphere-web
+        run: |
+          npm run lint
+          npm test
+
+      - name: Build website and offline download
+        working-directory: planisphere-web
+        run: |
+          npm run build
+          npm run build:singlefile
+
+      - name: Assemble Pages site
+        run: |
+          mkdir -p _site/planisphere-web
+          cp -R planisphere-web/dist/. _site/planisphere-web/
+          cp planisphere-web/dist-singlefile/index.html _site/planisphere-web/planisphere.html
+          printf '%s\n' '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Astronomy apps</title><h1>Astronomy apps</h1><p><a href="./planisphere-web/">Open the planisphere</a></p><p><a href="./planisphere-web/planisphere.html" download>Download the offline planisphere</a></p></html>' > _site/index.html
+          touch _site/.nojekyll
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
