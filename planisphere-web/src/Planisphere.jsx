@@ -1,17 +1,33 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { dateFromFields, dateFields, diskRotation, hemisphere, horizonPoints, horizontalToEquatorial, minutesForRotation, normalize, ofDate, pathFromPoints, project, RAD, sidereal } from './astro.js'
+import { panChart, zoomChart } from './chartView.js'
 
 const RADIUS = 300
 const ringPoint = (angle, radius, latitude) => project(angle, 90 - hemisphere(latitude) * (180 - Math.abs(latitude)), latitude, 0, radius)
+
+function chartPoint(svg, clientX, clientY) {
+  return new DOMPoint(clientX, clientY).matrixTransform(svg.getScreenCTM().inverse())
+}
+
+function pinchPoints(pointers) {
+  const [first, second] = [...pointers.values()]
+  return {
+    x: (first.x + second.x) / 2,
+    y: (first.y + second.y) / 2,
+    distance: Math.hypot(first.x - second.x, first.y - second.y),
+  }
+}
 
 function RingLabel({ angle, radius, latitude, children, className = '' }) {
   const point = ringPoint(angle, radius, latitude)
   return <text x={point[0]} y={point[1]} textAnchor="middle" dominantBaseline="central" transform={`rotate(${hemisphere(latitude) * angle},${point[0]},${point[1]})`} className={className}>{children}</text>
 }
 
-export default function Planisphere({ stars, lines, date, latitude, longitude, offset, options, selected, guide, onSelect, onDateChange }) {
+export default function Planisphere({ stars, lines, date, latitude, longitude, offset, options, selected, guide, onSelect, onDateChange, view, onViewChange }) {
   const svgRef = useRef(null)
   const dragRef = useRef(null)
+  const pointersRef = useRef(new Map())
+  const movedRef = useRef(false)
   const lst = sidereal(date, longitude)
   const pole = hemisphere(latitude)
   const rotation = diskRotation(lst, latitude)
@@ -21,24 +37,78 @@ export default function Planisphere({ stars, lines, date, latitude, longitude, o
   const selectedPoint = selected ? project(selected.ra, selected.dec, latitude) : null
   const guidePoint = guide ? project(guide.ra, guide.dec, latitude) : null
 
+  useEffect(() => {
+    const svg = svgRef.current
+    function wheel(event) {
+      event.preventDefault()
+      const anchor = chartPoint(svg, event.clientX, event.clientY)
+      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? svg.clientHeight : 1)
+      const factor = Math.exp(-Math.max(-100, Math.min(100, delta)) * 0.003)
+      onViewChange((previous) => zoomChart(previous, previous.scale * factor, anchor))
+    }
+    svg.addEventListener('wheel', wheel, { passive: false })
+    return () => svg.removeEventListener('wheel', wheel)
+  }, [onViewChange])
+
   function pointerAngle(event) {
-    const bounds = svgRef.current.getBoundingClientRect()
-    return Math.atan2(event.clientY - bounds.top - bounds.height / 2, event.clientX - bounds.left - bounds.width / 2) / RAD
+    const point = chartPoint(svgRef.current, event.clientX, event.clientY)
+    return Math.atan2(point.y, point.x) / RAD
   }
 
   function beginDrag(event) {
-    if (event.button !== 0 || event.target.closest('[data-object]')) return
-    event.currentTarget.setPointerCapture(event.pointerId)
-    dragRef.current = { angle: pointerAngle(event), time: date.getTime() }
+    if (event.button !== 0) return
+    if (pointersRef.current.size === 0) movedRef.current = false
+    pointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
+    event.target.setPointerCapture(event.pointerId)
+    dragRef.current = {
+      angle: pointerAngle(event), time: date.getTime(), x: event.clientX, y: event.clientY,
+      startX: event.clientX, startY: event.clientY,
+      mode: view.scale > 1 ? 'pan' : event.target.closest('[data-object]') ? 'select' : 'rotate',
+    }
   }
 
   function drag(event) {
-    if (!dragRef.current) return
+    const pointers = pointersRef.current
+    if (!pointers.has(event.pointerId) || !dragRef.current) return
+    const before = pointers.size === 2 ? pinchPoints(pointers) : null
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
+    if (before) {
+      const after = pinchPoints(pointers)
+      if (!before.distance || !after.distance) return
+      const anchor = chartPoint(svgRef.current, before.x, before.y)
+      const nextAnchor = chartPoint(svgRef.current, after.x, after.y)
+      onViewChange((previous) => {
+        const next = zoomChart(previous, previous.scale * after.distance / before.distance, anchor)
+        return panChart(next, (anchor.x - nextAnchor.x) * previous.scale / next.scale, (anchor.y - nextAnchor.y) * previous.scale / next.scale)
+      })
+      movedRef.current = true
+      return
+    }
+    const gesture = dragRef.current
+    if (Math.hypot(event.clientX - gesture.startX, event.clientY - gesture.startY) > 4) movedRef.current = true
+    if (gesture.mode === 'select' || !movedRef.current) return
+    if (gesture.mode === 'pan') {
+      const previous = chartPoint(svgRef.current, gesture.x, gesture.y)
+      const next = chartPoint(svgRef.current, event.clientX, event.clientY)
+      onViewChange((current) => panChart(current, previous.x - next.x, previous.y - next.y))
+      dragRef.current = { ...gesture, x: event.clientX, y: event.clientY }
+      return
+    }
     const angle = pointerAngle(event)
-    const delta = normalize(angle - dragRef.current.angle + 180) - 180
-    const time = dragRef.current.time + minutesForRotation(delta, latitude) * 60000
-    dragRef.current = { angle, time }
+    const delta = normalize(angle - gesture.angle + 180) - 180
+    const time = gesture.time + minutesForRotation(delta, latitude) * 60000
+    dragRef.current = { ...gesture, angle, time }
     onDateChange(new Date(time))
+  }
+
+  function endDrag(event) {
+    pointersRef.current.delete(event.pointerId)
+    const remaining = [...pointersRef.current.values()][0]
+    dragRef.current = remaining ? {
+      angle: pointerAngle({ clientX: remaining.x, clientY: remaining.y }), time: date.getTime(),
+      x: remaining.x, y: remaining.y, startX: remaining.x, startY: remaining.y,
+      mode: view.scale > 1 ? 'pan' : 'rotate',
+    } : null
   }
 
   const declinations = [-60, -30, 0, 30, 60].filter((dec) => 90 - pole * dec <= 180 - Math.abs(latitude))
@@ -50,7 +120,8 @@ export default function Planisphere({ stars, lines, date, latitude, longitude, o
   const zenith = project(lst, latitude, latitude, lst)
   const cardinalLabels = [['N', 0], ['NE', 45], ['E', 90], ['SE', 135], ['S', 180], ['SW', 225], ['W', 270], ['NW', 315]]
 
-  return <svg ref={svgRef} className="planisphere" viewBox="-400 -400 800 800" aria-label="Rotating planisphere star chart" onPointerDown={beginDrag} onPointerMove={drag} onPointerUp={() => { dragRef.current = null }} onPointerCancel={() => { dragRef.current = null }}>
+  const size = 800 / view.scale
+  return <svg ref={svgRef} className={`planisphere${view.scale > 1 ? ' is-zoomed' : ''}`} viewBox={`${view.x - size / 2} ${view.y - size / 2} ${size} ${size}`} aria-label="Rotating planisphere star chart" onPointerDown={beginDrag} onPointerMove={drag} onPointerUp={endDrag} onPointerCancel={endDrag} onLostPointerCapture={endDrag} onClickCapture={(event) => { if (movedRef.current) { event.preventDefault(); event.stopPropagation() } }}>
     <defs>
       <clipPath id="sky-window"><path d={horizon} /></clipPath>
       <clipPath id="star-disk"><circle r={RADIUS} /></clipPath>
